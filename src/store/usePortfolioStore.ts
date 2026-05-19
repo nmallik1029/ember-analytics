@@ -1,5 +1,6 @@
-﻿import { create } from "zustand";
+import { create } from "zustand";
 import type { ExperienceLevel, Holding, TimeHorizon } from "@/types/portfolio";
+import type { GeneratedPortfolio } from "@/lib/portfolioEngine";
 
 const defaultBudget = 25000;
 
@@ -7,6 +8,8 @@ const createHoldings = (): Holding[] => [
   { symbol: "AAPL", shares: 50, estimatedValue: 9500 },
   { symbol: "VTI", shares: 30, estimatedValue: 7200 },
 ];
+
+type GenerationStatus = "idle" | "loading" | "ready" | "error";
 
 type PortfolioState = {
   stepIndex: number;
@@ -19,6 +22,9 @@ type PortfolioState = {
   exclusions: string[];
   customExclusions: string;
   holdings: Holding[];
+  generated: GeneratedPortfolio | null;
+  generationStatus: GenerationStatus;
+  generationError: string | null;
   setStepIndex: (index: number) => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -32,6 +38,9 @@ type PortfolioState = {
   setCustomExclusions: (value: string) => void;
   addHolding: (holding: Holding) => void;
   removeHolding: (symbol: string) => void;
+  setGenerationStatus: (status: GenerationStatus) => void;
+  setGenerated: (portfolio: GeneratedPortfolio | null) => void;
+  setGenerationError: (message: string | null) => void;
 };
 
 export const usePortfolioStore = create<PortfolioState>((set) => ({
@@ -45,6 +54,9 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
   exclusions: [],
   customExclusions: "",
   holdings: createHoldings(),
+  generated: null,
+  generationStatus: "idle",
+  generationError: null,
   setStepIndex: (index) => set({ stepIndex: index }),
   nextStep: () => set((state) => ({ stepIndex: state.stepIndex + 1 })),
   prevStep: () => set((state) => ({ stepIndex: Math.max(0, state.stepIndex - 1) })),
@@ -77,4 +89,7 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     set((state) => ({
       holdings: state.holdings.filter((holding) => holding.symbol !== symbol),
     })),
+  setGenerationStatus: (status) => set({ generationStatus: status }),
+  setGenerated: (portfolio) => set({ generated: portfolio }),
+  setGenerationError: (message) => set({ generationError: message }),
 }));

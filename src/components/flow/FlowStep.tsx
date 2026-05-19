@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import type { JSX } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { flowSteps } from "@/data/steps";
 import { WelcomeStep } from "@/components/flow/steps/WelcomeStep";

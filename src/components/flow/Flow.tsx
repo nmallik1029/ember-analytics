@@ -1,6 +1,5 @@
-﻿"use client";
+"use client";
 
-import { useEffect } from "react";
 import { flowSteps } from "@/data/steps";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { FlowStep } from "@/components/flow/FlowStep";
@@ -9,16 +8,7 @@ import { StepNavigation } from "@/components/flow/StepNavigation";
 
 export const Flow = () => {
   const stepIndex = usePortfolioStore((state) => state.stepIndex);
-  const nextStep = usePortfolioStore((state) => state.nextStep);
   const currentStep = flowSteps[stepIndex];
-
-  useEffect(() => {
-    if (currentStep?.id !== "build") {
-      return;
-    }
-    const timer = setTimeout(() => nextStep(), 2200);
-    return () => clearTimeout(timer);
-  }, [currentStep?.id, nextStep]);
 
   if (!currentStep) {
     return null;

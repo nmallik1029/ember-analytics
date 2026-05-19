@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EMBER — Portfolio Creator
 
-## Getting Started
+Educational stock portfolio builder. Next.js (App Router) + Supabase. The wizard
+collects budget, risk, horizon, sectors, preferences, exclusions and existing
+holdings, then a deterministic engine produces an illustrative model allocation.
 
-First, run the development server:
+> Educational only. Not financial advice. No execution.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js 16 / React 19, App Router
+- Tailwind v4
+- Zustand for wizard state
+- Framer Motion for transitions
+- Supabase (auth + persistence)
+- Allocation engine in [src/lib/portfolioEngine.ts](src/lib/portfolioEngine.ts)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Copy env file and fill in values from your Supabase project:
 
-## Learn More
+   ```bash
+   cp .env.local.example .env.local
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Apply the schema. In the Supabase dashboard, open SQL editor and run
+   [supabase/schema.sql](supabase/schema.sql). This creates `profiles` and
+   `portfolios` tables with RLS policies.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Install + run:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   bun install
+   bun dev
+   ```
 
-## Deploy on Vercel
+   Open http://localhost:3000.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Wizard flow
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`src/app/flow/page.tsx` → `Flow` → 12 steps in `src/components/flow/steps/`.
+
+- `BuildStep` POSTs the collected inputs to `/api/portfolio/generate`.
+- `RevealStep` renders the response from the Zustand store.
+- `ExportStep` POSTs to `/api/portfolio/save` (requires a signed-in user).
+
+## API routes
+
+| Route                                | Purpose                                         |
+| ------------------------------------ | ----------------------------------------------- |
+| `POST /api/portfolio/generate`       | Build a model allocation from wizard inputs.    |
+| `POST /api/portfolio/save`           | Persist a generated portfolio for a user.       |
+| `POST /api/supabase/signup`          | Admin-create a user via service role.           |
+| `POST /api/supabase/profile`         | Upsert a `profiles` row after signup.           |
+
+## Notes
+
+- The FastAPI backend that previously lived under `backend/` has been removed;
+  generation is now in the Next.js route above.
+- The service-role Supabase key is only read inside route handlers.

@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { email, password, name } = body
     if (!email || !password) {
-      return NextResponse.json({ error: 'email and password are required12' }, { status: 400 })
+      return NextResponse.json({ error: 'email and password are required' }, { status: 400 })
     }
 
     const supabase = createServiceClient()

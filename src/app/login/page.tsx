@@ -1,6 +1,7 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import LoginForm from "@/components/LoginForm";
 
 export default function LoginPage() {
   return (
@@ -19,32 +20,10 @@ export default function LoginPage() {
                 Access your portfolio vault.
               </h1>
               <p className="mt-3 text-sm text-slate-600">
-                Sign in to manage multiple model portfolios and continue where you left off.
+                Sign in with a one-time code sent to your email.
               </p>
             </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-[0.28em] text-slate-500">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  placeholder="you@email.com"
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-900"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-[0.28em] text-slate-500">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-900"
-                />
-              </div>
-              <Button className="w-full">Sign in</Button>
-            </div>
+            <LoginForm />
           </Card>
           <Card className="space-y-4">
             <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
